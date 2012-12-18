@@ -7,6 +7,7 @@
 
     var app = WinJS.Application;
     var activation = Windows.ApplicationModel.Activation;
+    var articlesList;
 
     app.onactivated = function (args) {
         if (args.detail.kind === activation.ActivationKind.launch) {
@@ -17,9 +18,49 @@
                 // TODO: This application has been reactivated from suspension.
                 // Restore application state here.
             }
-            args.setPromise(WinJS.UI.processAll());
+
+            var articlelistElement = document.getElementById("articlelist");
+            articlelistElement.addEventListener("iteminvoked", itemInvoked);
+            backbutton.addEventListener("click", backButtonClick);
+
+            articlesList = new WinJS.Binding.List();
+            var publicMembers = { ItemList: articlesList };
+            WinJS.Namespace.define("TFMData", publicMembers);
+
+            args.setPromise(WinJS.UI.processAll().then(downloadTFMBlogFeed));
         }
     };
+
+    function backButtonClick(e) {
+        articlecontent.style.display = "none";
+        articlelist.style.display = "";
+        WinJS.UI.Animation.enterPage(articlelist);
+    }
+
+    function itemInvoked(e) {
+        var currentArticle = articlesList.getAt(e.detail.itemIndex);
+        WinJS.Utilities.setInnerHTMLUnsafe(articlecontent, currentArticle.content);
+        articlelist.style.display = "none";
+        articlecontent.style.display = "";
+        WinJS.UI.Animation.enterPage(articlecontent);
+    }
+
+    function downloadTFMBlogFeed() {
+        WinJS.xhr({ url: "http://feeds.feedburner.com/TFM-Wall", responseType: 'responseXML' }).then(function (rss) {
+            var items = rss.responseXML.querySelectorAll("item");
+
+            for (var n = 0; n < items.length; n++) {
+                var article = {};
+                article.title = items[n].querySelector("title").textContent;
+                var imageStart = items[n].textContent.indexOf('<img src="') + 10;
+                var imageEnd = items[n].textContent.indexOf('"', imageStart + 1);
+
+                article.thumbnail = items[n].textContent.substring(imageStart, imageEnd);
+                article.content = items[n].textContent;
+                articlesList.push(article);
+            }
+        });
+    }
 
     app.oncheckpoint = function (args) {
         // TODO: This application is about to be suspended. Save any state
