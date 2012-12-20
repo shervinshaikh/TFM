@@ -47,19 +47,24 @@
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <PackageCertificateKeyFile>TFM_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>TFM_StoreKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <PackageCertificateThumbprint>5ACECAC439684F41E027ABBF28D3DBE5D56AF149</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
     <Content Include="default.html" />
+    <Content Include="html\privacy.html" />
     <Content Include="images\logo.png" />
     <Content Include="images\smalllogo.png" />
     <Content Include="images\splashscreen.png" />
     <Content Include="images\storelogo.png" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <None Include="TFM_StoreKey.pfx" />
+    <None Include="Package.StoreAssociation.xml" />
     <None Include="TFM_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

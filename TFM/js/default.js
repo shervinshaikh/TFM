@@ -28,6 +28,7 @@
             WinJS.Namespace.define("TFMData", publicMembers);
 
             args.setPromise(WinJS.UI.processAll().then(downloadTFMBlogFeed));
+            initializeSettings();
         }
     };
 
@@ -60,6 +61,21 @@
                 articlesList.push(article);
             }
         });
+    }
+
+    function initializeSettings() {
+        WinJS.Application.onsettings = function (e) {
+            e.detail.applicationcommands = {
+                "privacy": {
+                    title: "Privacy",
+                    href: "/html/privacy.html"
+                }
+            };
+            WinJS.UI.SettingsFlyout.populateSettings(e);
+        };
+        // Make sure the following is called after the DOM has initialized. 
+        // Typically this would be part of app initialization
+        // WinJS.Application.start();
     }
 
     app.oncheckpoint = function (args) {
